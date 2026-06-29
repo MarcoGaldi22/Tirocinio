@@ -34,3 +34,17 @@ Per valutare la robustezza della soluzione, abbiamo simulato un attaccante in po
 * **Impatto delle generalizzazioni:** Allargando le classi di equivalenza (es. passando da fasce d'età di 10 anni a 50 anni), il rischio massimo crolla drasticamente, ma rende il dataset inutilizzabile per fini medici. 
 * **Linee guida di rilascio (Policy):** È stata definita una soglia rigida di sicurezza. Si raccomanda di **non rilasciare** alcun dataset in cui il rischio di re-identificazione per una singola classe di equivalenza superi il **20%** (ovvero $k < 5$). 
 * **Raccomandazione finale:** L'implementazione attuale (Fasce di 20 anni e CAP a 2 cifre) è risultata l'unica configurazione testata in grado di superare l'audit della policy di rilascio, garantendo la conformità senza distruggere i trend diagnostici.
+
+## 5. Riproducibilità e Demo (Fase 5)
+L'intera pipeline di anonimizzazione, la valutazione dell'utilità e l'analisi del rischio sono state consolidate in un unico Jupyter Notebook (`Synthea.ipynb`) completamente riproducibile.
+
+### 5.1 Come eseguire la demo
+Il notebook è strutturato per essere eseguito in modo sequenziale ("Run All"). La cella finale contiene una demo interattiva che applica la pipeline automatica testando **tre diverse configurazioni** per dimostrare come i parametri influenzino il compromesso tra privacy e utilità:
+
+* **Parametri configurabili:** La funzione `pipeline_anonimizzazione` accetta in input `fascia_eta` (ampiezza in anni del gruppo d'età) e `cifre_cap` (numero di cifre da mantenere in chiaro nel codice postale).
+* **Configurazione 1 (Bassa Privacy):** `fascia_eta=10`, `cifre_cap=3`. 
+  * *Risultato:* Altissima precisione medica, ma fallisce l'audit di sicurezza (Rischio 100%, k=1).
+* **Configurazione 2 (Compromesso Ottimale - Target):** `fascia_eta=20`, `cifre_cap=2`.
+  * *Risultato:* Passa la policy di rilascio garantendo un k=5 (Rischio max 20%) con errori statistici relativi trascurabili (es. 0.09% sull'età media).
+* **Configurazione 3 (Alta Privacy):** `fascia_eta=50`, `cifre_cap=1`.
+  * *Risultato:* Sicurezza estrema (k=35), ma distrugge il valore del dataset per l'analisi medica, appiattendo completamente le distribuzioni geografiche e demografiche.
