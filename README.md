@@ -27,3 +27,10 @@ L'obiettivo di questo progetto è bilanciare la protezione dei dati sensibili co
     * Le **query specifiche e localizzate** subiscono una perdita di precisione maggiore. Questa distorsione è una conseguenza voluta della protezione, poiché impedisce a un attaccante di isolare target geografici specifici.
 
 **Conclusione:** Il dataset ottenuto è considerato "sicuro" per la condivisione a fini di ricerca, in quanto garantisce la protezione delle minoranze demografiche pur mantenendo l'integrità delle analisi statistiche complessive.
+
+## 4. Analisi del Rischio e Raccomandazioni (Fase 4)
+Per valutare la robustezza della soluzione, abbiamo simulato un attaccante in possesso di informazioni demografiche parziali (Età, Sesso, CAP) valutando l'impatto di tre diverse configurazioni di generalizzazione.
+
+* **Impatto delle generalizzazioni:** Allargando le classi di equivalenza (es. passando da fasce d'età di 10 anni a 50 anni), il rischio massimo crolla drasticamente, ma rende il dataset inutilizzabile per fini medici. 
+* **Linee guida di rilascio (Policy):** È stata definita una soglia rigida di sicurezza. Si raccomanda di **non rilasciare** alcun dataset in cui il rischio di re-identificazione per una singola classe di equivalenza superi il **20%** (ovvero $k < 5$). 
+* **Raccomandazione finale:** L'implementazione attuale (Fasce di 20 anni e CAP a 2 cifre) è risultata l'unica configurazione testata in grado di superare l'audit della policy di rilascio, garantendo la conformità senza distruggere i trend diagnostici.
